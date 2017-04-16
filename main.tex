@@ -1,14 +1,20 @@
 \documentclass[a4paper,14pt]{scrartcl} 
+\usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[T1,T2A]{fontenc}
-\usepackage[russian,english]{babel}
+\usepackage[english,russian]{babel}
+\selectlanguage{Russian}
 \usepackage{afterpage}
 \usepackage{amsmath}
 \usepackage{graphicx}
+\usepackage{listings}
 \usepackage{wrapfig}
 \usepackage{setspace}
 \doublespacing
 \usepackage{pdfpages}
+\usepackage{courier}
+\lstset{basicstyle=\footnotesize\ttfamily,breaklines=true}
+\usepackage{cyrtimes}
+\usepackage{enumitem}
 \addto\captionsenglish{\renewcommand\contentsname{Оглавление}}
 \addto\captionsenglish{\renewcommand\figurename{Рис.}}
 
@@ -54,9 +60,95 @@
 \newpage
 \section{Математическая постановка задачи}
 \begin{enumerate}
-    \item \blindtext
-    \item \blindtext
+    \item Уравнения равновесия:
+        $$
+            \sigma_{ij,j} + \rho F_i = 0;
+        $$
+    \item Закон Гука для упругопластической среды:
+        $$
+            \dot{\sigma_{ij}} = \lambda(\dot{\theta} - \dot{\theta}^p) + 2 \mu (\dot{\varepsilon_{ij}} - \dot{\varepsilon_{ij}}^p);
+        $$
+    \item Выражение компонент тензора деформаций через компоненты вектора перемещения:
+        $$
+            \dot{\varepsilon_{ij}} = \dfrac{1}{2}(u_{i,j} + u_{j,i});
+        $$
+    \item Приращение полных деформаций представляется в виде суммы пластической и упругой составляющих:
+        $$
+            \dot{\varepsilon_{ij}} = \dot{\varepsilon_{ij}}^e + \dot{\varepsilon_{ij}}^p;
+        $$
+    \item Упругое состояние среды в пространстве напряжений ограничено поверхностью предельного состояния. f – уравнение предельной поверхности, g – пластический потенциал, $d\lambda$ - пластический множитель, определяемый в ходе процесса деформации.
+        $$
+            f(\sigma_{ij}, \dot{\varepsilon}^p_{ij}) = 0;
+        $$
+        $$
+            g(\sigma_{ij}, \dot{\varepsilon}^p_{ij}) = 0;
+        $$
+        $$
+            d\varepsilon^p_{ij} = d \lambda \dfrac{\partial g}{\partial \sigma_{ij}};
+        $$
+        Предельная поверхность записывается в следующем виде (a и Y – параметры, которые можно получить, используя данные .las файла, содержащего каротажные данные (а именно коэффициент внутреннего трения и когезию). Здесь $\tau = (s_{ij} s_{ij} / 2)^{\tfrac{1}{2}}$ - интенсивность касательных напряжений:
+        $$
+            f(\sigma, \tau) = \tau - \alpha \sigma - Y;
+        $$
+        Пластический потенциал записывается в следующем виде ($\lambda$ - коэффициент дилатансии):
+        $$
+            g(\sigma, \tau) = \tau - \Lambda \sigma;
+        $$
 \end{enumerate}
 
 
+\newpage
+\section{Автоматическая генерация скрипта для препроцессора CAE Fidesys}
+Так как скважина может иметь нетривиальную геометрию, а горные породы вокруг неё могут иметь сложную слоистую структуру, требуется способ автоматически генерировать скрипт для препроцессора, отражающий параметры задачи. Мной была разработана программа на языке Python, на вход получающая .las файл, содержащий разнообразные данные, полученные с помощью опускания геофизического зонда в ствол скважины. Файл считывается программой, анализируется, с учётом известного синтаксиса .las формата, вся информация из него считывается во внутренние структуры данных, преобразовывается для удобства работы. На этой основе формируется скрипт для препроцессора с командами, задающими геометрию шахты, свойства материалов, краевые условия и т.д.
+
+\vspace{10mm}
+\textbf{Пример фрагмента файла с каротажными данными:} 
+\begin{lstlisting}[frame=single]
+~Metadata
+...
+~Curve information
+Depth
+TVD
+Pw
+zen
+azi
+...
+~A LOG DATA SECTION
+1020.2000 1020.2000 10.0000 0.0000 219.0000 ...
+1020.4000 1020.4000 10.0020 0.0000 219.0000 ...
+\end{lstlisting}
+
+\newpage
+\textbf{Пример фрагмента сгенерированного скрипта для препроцессора:} 
+\begin{lstlisting}[frame=single]
+reset
+set node constraint on
+open well_geometry.fds
+curve 13 interval 10
+curve 13 scheme equal
+mesh curve 13
+surface 12 size 0.8
+mesh surface 12
+create material "grunt" property_group "HOOK_DRUCKER_PRAGER" 
+block 1 add volume 1
+block 1 element type hex20
+block 1 material 'grunt'
+create table 101 file Edyn.csv
+modify table 101 dependency z
+modify material 1 set property 'MODULUS' table 101
+\end{lstlisting}
+
+
+\newpage
+\section{Рассмотрение решения конкретной задачи.}
+\subsection{Форма скважины, построенной по данному заказчиком .las файлу}
+
+\includegraphics[width=1\textwidth]{images/form.png}
+\afterpage{%
+\subsection{Слоистая структура окружающих горных пород.}
+При более близком рассмотрении любого из участков скважины хорошо заметно, что породы вокруг скважины, как и ожидалось, имеют ярко выраженную слоистую структуру. \\
+
+\includegraphics[width=1\textwidth]{images/layers.png}
+\clearpage
+}
 \end{document}
