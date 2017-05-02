@@ -1,10 +1,17 @@
 !_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
 !_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
-!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
-!_TAG_PROGRAM_NAME	Exuberant Ctags	//
-!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
-!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-.	main.tex	/^\\afterpage{%$/;"	u
-.	main.tex	/^\\newpage$/;"	s
-.las          	main.tex	/^\\section{Рассмотрение решения конкретной задачи.}$/;"	u
-CAE Fidesys	main.tex	/^\\newpage$/;"	s
+!_TAG_OUTPUT_MODE	u-ctags	/u-ctags or e-ctags/
+!_TAG_PROGRAM_AUTHOR	Universal Ctags Team	//
+!_TAG_PROGRAM_NAME	Universal Ctags	/Derived from Exuberant Ctags/
+!_TAG_PROGRAM_URL	https://ctags.io/	/official site/
+!_TAG_PROGRAM_VERSION	0.0.0	/e3ea52b3/
+.	main.tex	/^\\section{Заключение.}$/;"	s
+.	main.tex	/^\\section{Рассмотрение решения конкретной задачи.}$/;"	s
+.	main.tex	/^\\subsection{Два варианта расчёта.}$/;"	u	section:.
+.	main.tex	/^\\subsection{Слоистая структура окружающих горных пород.}$/;"	u	section:.
+.	main.tex	/^\\subsubsection{Без забойного давления.}$/;"	b	subsection:."".
+.	main.tex	/^\\subsubsection{С проектировочным забойным давлением.}$/;"	b	subsection:."".
+.las	main.tex	/^\\subsection{Дополнительная информация о формате .las}$/;"	u	section:CAE Fidesys
+.las          	main.tex	/^\\subsection{Форма скважины, построенной по данному заказ�/;"	u	section:.
+CAE Fidesys	main.tex	/^\\section{Автоматическая генерация скрипта для препроце/;"	s
+fig:well	main.tex	/^    \\caption{\\label{fig:well}Устье скважины.}$/;"	l
